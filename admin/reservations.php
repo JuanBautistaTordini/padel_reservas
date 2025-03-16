@@ -346,6 +346,18 @@ $reservations = $stmt->fetchAll(PDO::FETCH_ASSOC);
           <a href="index.php?page=admin-reservations" class="bg-gray-200 hover:bg-gray-300 text-gray-800 font-medium py-2 px-4 rounded-lg transition duration-300 flex items-center">
             <i class="fas fa-redo-alt mr-2"></i> Limpiar
           </a>
+          <?php
+          // Construir la URL de descarga con los mismos filtros aplicados
+          $downloadUrl = 'api/admin/reservations/download.php';
+          $params = [];
+          if (!empty($courtFilter)) $params[] = 'court_id=' . $courtFilter;
+          if (!empty($dateFilter)) $params[] = 'date=' . $dateFilter;
+          if (!empty($statusFilter)) $params[] = 'status=' . $statusFilter;
+          if (!empty($params)) $downloadUrl .= '?' . implode('&', $params);
+          ?>
+          <a href="<?php echo $downloadUrl; ?>" class="bg-green-600 hover:bg-green-700 text-white font-medium py-2 px-2 rounded-lg transition duration-300 items-center justify-center">
+            <i class="fas fa-download"></i>
+          </a>
         </div>
       </form>
     </div>
@@ -509,4 +521,3 @@ $reservations = $stmt->fetchAll(PDO::FETCH_ASSOC);
     animation: fadeIn 0.5s ease-out forwards;
   }
 </style>
-

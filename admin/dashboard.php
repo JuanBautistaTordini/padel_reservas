@@ -54,7 +54,11 @@ $latestReservations = $stmt->fetchAll(PDO::FETCH_ASSOC);
 $weekData = [];
 for ($i = 6; $i >= 0; $i--) {
     $date = date('Y-m-d', strtotime("-$i days"));
-    $dayName = date('D', strtotime($date));
+    $dayNum = date('w', strtotime($date));
+    
+    // Traducir días de la semana al español
+    $diasEspanol = ['Dom', 'Lun', 'Mar', 'Mié', 'Jue', 'Vie', 'Sáb'];
+    $dayName = $diasEspanol[$dayNum];
     
     $query = "SELECT COUNT(*) as total FROM reservations WHERE DATE(created_at) = :date";
     $stmt = $db->prepare($query);
@@ -374,7 +378,7 @@ for ($i = 6; $i >= 0; $i--) {
             data: {
                 labels: weekData.map(item => item.day),
                 datasets: [{
-                    label: 'Reservas',
+                    label: 'Actividades Recientes',
                     data: weekData.map(item => item.count),
                     backgroundColor: '#10b981',
                     borderColor: '#10b981',
@@ -447,7 +451,7 @@ for ($i = 6; $i >= 0; $i--) {
     }
     
     .chart-container {
-        animation: fadeIn 0.6s ease-out;
+        animation: fadeIn 0.9s ease-out;
     }
 </style>
 
