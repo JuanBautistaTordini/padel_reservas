@@ -62,7 +62,7 @@ if (isset($_GET['action']) && $_GET['action'] === 'new' && isset($_GET['court_id
       <div class="max-w-2xl mx-auto">
     <div class="bg-white rounded-xl shadow-lg overflow-hidden">
         <!-- Encabezado -->
-        <div class="bg-gradient-to-r from-primary to-secondary p-6 text-white">
+        <div class="bg-primary p-6 text-white">
             <h2 class="text-2xl font-bold text-center">Confirmar Reserva</h2>
             <p class="text-center text-white text-opacity-80 mt-2">Revise los detalles antes de confirmar</p>
         </div>
@@ -126,7 +126,7 @@ if (isset($_GET['action']) && $_GET['action'] === 'new' && isset($_GET['court_id
             </div>
             
             <!-- Formulario de confirmación -->
-            <form action="api/reservations/create.php" method="post">
+            <form action="api/reservations/create.php" method="post" onsubmit="window.location.href='index.php?page=reservations&success=created'; return true;">
                 <input type="hidden" name="court_id" value="<?php echo $courtId; ?>">
                 <input type="hidden" name="fecha" value="<?php echo $date; ?>">
                 <input type="hidden" name="hora_inicio" value="<?php echo $startTime; ?>">
@@ -279,15 +279,12 @@ if (isset($_GET['action']) && $_GET['action'] === 'new' && isset($_GET['court_id
                                     
                                     if ($canCancel):
                                     ?>
-                                        <form action="api/reservations/cancel.php" method="post" class="inline" onsubmit="return confirm('¿Está seguro que desea cancelar esta reserva?');">
-                                            <input type="hidden" name="reservation_id" value="<?php echo $reservation['id']; ?>">
-                                            <button type="submit" class="text-red-600 hover:text-red-800 inline-flex items-center text-sm bg-red-50 hover:bg-red-100 px-3 py-1 rounded-lg transition-colors">
-                                                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
-                                                </svg>
-                                                Cancelar
-                                            </button>
-                                        </form>
+                                        <button type="button" onclick="openCancelModal(<?php echo $reservation['id']; ?>, '<?php echo htmlspecialchars($reservation['court_name'], ENT_QUOTES); ?>', '<?php echo date('d/m/Y', strtotime($reservation['fecha'])); ?>', '<?php echo substr($reservation['hora_inicio'], 0, 5); ?>', '<?php echo substr($reservation['hora_fin'], 0, 5); ?>')" class="text-red-600 hover:text-red-800 inline-flex items-center text-sm bg-red-50 hover:bg-red-100 px-3 py-1 rounded-lg transition-colors">
+                                            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+                                            </svg>
+                                            Cancelar
+                                        </button>
                                     <?php else: ?>
                                         <span class="text-gray-400 text-sm">No disponible</span>
                                     <?php endif; ?>
@@ -322,4 +319,104 @@ if (isset($_GET['action']) && $_GET['action'] === 'new' && isset($_GET['court_id
   <?php
 }
 ?>
+
+<!-- Modal de Cancelación de Reserva -->
+<div id="cancelModal" class="fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center hidden">
+    <div class="bg-white rounded-xl shadow-lg overflow-hidden max-w-md w-full mx-4 transform transition-all">
+        <!-- Encabezado del modal -->
+        <div class="bg-red-600 p-6 text-white">
+            <h3 class="text-xl font-bold text-center">Cancelar Reserva</h3>
+            <p class="text-center text-white text-opacity-80 mt-2">¿Está seguro que desea cancelar esta reserva?</p>
+        </div>
+        
+        <!-- Contenido del modal -->
+        <div class="p-6">
+            <div class="bg-red-50 rounded-xl p-6 mb-6 border border-red-100">
+                <h4 class="font-semibold text-lg mb-4 flex items-center text-gray-800">
+                    <i class="fas fa-info-circle text-red-500 mr-2"></i>
+                    Detalles de la Reserva
+                </h4>
+                
+                <div class="grid grid-cols-1 gap-4">
+                    <div class="flex items-start">
+                        <div class="bg-red-100 p-2 rounded-lg mr-3">
+                            <i class="fas fa-baseball-ball text-red-500"></i>
+                        </div>
+                        <div>
+                            <p class="text-sm text-gray-500">Cancha</p>
+                            <p id="modal-court" class="font-medium text-gray-800"></p>
+                        </div>
+                    </div>
+                    
+                    <div class="flex items-start">
+                        <div class="bg-red-100 p-2 rounded-lg mr-3">
+                            <i class="far fa-calendar-alt text-red-500"></i>
+                        </div>
+                        <div>
+                            <p class="text-sm text-gray-500">Fecha</p>
+                            <p id="modal-date" class="font-medium text-gray-800"></p>
+                        </div>
+                    </div>
+                    
+                    <div class="flex items-start">
+                        <div class="bg-red-100 p-2 rounded-lg mr-3">
+                            <i class="far fa-clock text-red-500"></i>
+                        </div>
+                        <div>
+                            <p class="text-sm text-gray-500">Horario</p>
+                            <p id="modal-time" class="font-medium text-gray-800"></p>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="mt-6 pt-4 border-t border-red-100">
+                    <div class="flex items-center text-gray-600">
+                        <i class="fas fa-exclamation-triangle text-red-500 mr-2"></i>
+                        <p class="text-sm">Esta acción no se puede deshacer.</p>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Botones de acción -->
+            <form id="cancelForm" action="api/reservations/cancel.php" method="post">
+                <input type="hidden" id="reservation_id" name="reservation_id" value="">
+                
+                <div class="flex justify-between">
+                    <button type="button" onclick="closeCancelModal()" class="bg-gray-200 hover:bg-gray-300 text-gray-800 font-bold py-3 px-6 rounded-lg transition duration-300 flex items-center">
+                        <i class="fas fa-times mr-2"></i> Volver
+                    </button>
+                    <button type="submit" class="bg-red-600 hover:bg-red-700 text-white font-bold py-3 px-6 rounded-lg transition duration-300 flex items-center">
+                        <i class="fas fa-check mr-2"></i> Confirmar Cancelación
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<script>
+    // Función para abrir el modal de cancelación
+    function openCancelModal(reservationId, courtName, date, startTime, endTime) {
+        // Establecer los valores en el modal
+        document.getElementById('reservation_id').value = reservationId;
+        document.getElementById('modal-court').textContent = courtName;
+        document.getElementById('modal-date').textContent = date;
+        document.getElementById('modal-time').textContent = startTime + ' - ' + endTime;
+        
+        // Mostrar el modal
+        document.getElementById('cancelModal').classList.remove('hidden');
+    }
+    
+    // Función para cerrar el modal
+    function closeCancelModal() {
+        document.getElementById('cancelModal').classList.add('hidden');
+    }
+    
+    // Configurar el formulario para redirigir después de enviar
+    document.getElementById('cancelForm').addEventListener('submit', function() {
+        setTimeout(function() {
+            window.location.href = 'index.php?page=reservations&success=cancelled';
+        }, 100);
+    });
+</script>
 

@@ -98,6 +98,8 @@ require_once 'config/timezone.php'; // Incluir configuración de zona horaria
     <?php include 'components/footer.php'; ?>
     
     <script src="js/loader.js"></script>
+    <script src="js/availability-poller.js"></script>
+    <script src="js/availability-ui-updater.js"></script>
     <script src="js/main.js"></script>
 </body>
 </html>

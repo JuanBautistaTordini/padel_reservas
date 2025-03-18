@@ -12,6 +12,46 @@ document.addEventListener("DOMContentLoaded", () => {
       })
     }, 5000)
   }
+  
+  // Inicializar el polling de disponibilidad en la página de reservas
+  if (window.location.href.includes('pages=courts')) {
+    // Verificar si existe el selector de cancha y fecha
+    const courtSelector = document.getElementById('court-selector');
+    const dateSelector = document.getElementById('date-selector');
+    
+    if (courtSelector && dateSelector) {
+      // Inicializar el poller con opciones personalizadas
+      const availabilityPoller = new AvailabilityPoller({
+        courtSelector: '#court-selector',
+        dateSelector: '#date-selector',
+        interval: 30000, // 30 segundos
+        onUpdate: function(data) {
+          console.log('Disponibilidad actualizada:', data);
+          updateAvailabilityUI(data);
+        },
+        onError: function(error) {
+          console.error('Error en el polling:', error);
+        }
+      });
+      
+      // Iniciar el polling
+      availabilityPoller.start();
+      
+      // Detener el polling cuando el usuario cambie de página
+      window.addEventListener('beforeunload', function() {
+        availabilityPoller.stop();
+      });
+      
+      // También actualizar cuando el usuario cambie la cancha o la fecha
+      courtSelector.addEventListener('change', function() {
+        availabilityPoller.forceUpdate();
+      });
+      
+      dateSelector.addEventListener('change', function() {
+        availabilityPoller.forceUpdate();
+      });
+    }
+  }
 
   // Validación de formularios
   const registerForm = document.querySelector('form[action="api/auth/register.php"]')

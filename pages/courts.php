@@ -29,7 +29,10 @@ $dayName = ucfirst($dayName);
 $nextDates = [];
 for ($i = 0; $i < 7; $i++) {
     $date = date('Y-m-d', strtotime("+$i day"));
-    $dayOfWeek = date('D', strtotime($date));
+    // Obtener el día de la semana en formato personalizado
+    $dayNum = date('w', strtotime($date));
+    $spanishDays = ['Dom', 'Lun', 'Mar', 'Mie', 'Jue', 'Vie', 'Sab'];
+    $dayOfWeek = $spanishDays[$dayNum];
     $dayNum = date('d', strtotime($date));
     $isSelected = ($date == $selectedDate);
     
@@ -278,8 +281,6 @@ for ($i = 0; $i < 7; $i++) {
         transition: transform 0.5s ease;
     }
 </style>
-
-<script src="js/realtime-reservations.js"></script>
 
 <script>
     document.addEventListener('DOMContentLoaded', function() {

@@ -339,13 +339,9 @@ for ($i = 6; $i >= 0; $i--) {
                                             </form>
                                         <?php endif; ?>
                                         
-                                        <form action="api/admin/reservations/update.php" method="post" class="inline">
-                                            <input type="hidden" name="reservation_id" value="<?php echo $reservation['id']; ?>">
-                                            <input type="hidden" name="status" value="cancelada">
-                                            <button type="submit" class="text-red-600 hover:text-red-800 p-1" onclick="return confirm('¿Está seguro que desea cancelar esta reserva?');">
-                                                <i class="fas fa-times-circle"></i>
-                                            </button>
-                                        </form>
+                                        <button type="button" class="text-red-600 hover:text-red-800 p-1" onclick="openDeleteReservationModal('<?php echo $reservation['id']; ?>', '<?php echo $reservation['user_name']; ?> - <?php echo $reservation['court_name']; ?> - <?php echo date('d/m/Y', strtotime($reservation['fecha'])); ?> (<?php echo substr($reservation['hora_inicio'], 0, 5); ?> - <?php echo substr($reservation['hora_fin'], 0, 5); ?>')">
+                                            <i class="fas fa-times-circle"></i>
+                                        </button>
                                     <?php else: ?>
                                         <span class="text-gray-400">No disponible</span>
                                     <?php endif; ?>
@@ -454,4 +450,10 @@ for ($i = 6; $i >= 0; $i--) {
         animation: fadeIn 0.9s ease-out;
     }
 </style>
+
+<!-- Incluir el modal de cancelación de reservas -->
+<?php include 'components/delete-reservation-modal.php'; ?>
+
+<!-- Script para el modal de cancelación -->
+<script src="js/reservation-modals.js"></script>
 
