@@ -35,7 +35,7 @@
                         Cancelar
                     </button>
                     <button type="submit" class="px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition-colors focus:outline-none flex items-center">
-                        <i class="fas fa-trash-alt mr-2"></i> Eliminar
+                        <i class="fas fa-times-circle mr-2"></i> Confirmar
                     </button>
                 </div>
             </form>

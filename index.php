@@ -60,6 +60,13 @@ require_once 'config/timezone.php'; // Incluir configuración de zona horaria
                     include 'pages/unauthorized.php';
                 }
                 break;
+            case 'database_admin':
+                if (isset($_SESSION['user_role']) && $_SESSION['user_role'] === 'admin') {
+                    include 'admin/database_admin.php';
+                } else {
+                    include 'pages/unauthorized.php';
+                }
+                break;
             case 'admin-courts':
                 if (isset($_SESSION['user_role']) && $_SESSION['user_role'] === 'admin') {
                     include 'admin/courts.php';

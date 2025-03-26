@@ -22,6 +22,22 @@ class Database {
         
         return $this->conn;
     }
+
+    public function getDatabaseSize() {
+        try {
+            $query = "SELECT ROUND(SUM(data_length + index_length) / 1024 / 1024, 2) AS size_mb 
+                      FROM information_schema.tables 
+                      WHERE table_schema = :database_name";
+            $stmt = $this->conn->prepare($query);
+            $stmt->bindParam(':database_name', $this->db_name);
+            $stmt->execute();
+            $result = $stmt->fetch(PDO::FETCH_ASSOC);
+            return $result['size_mb'] ?: 0;
+        } catch (PDOException $e) {
+            error_log("Error al obtener tamaño de la base de datos: " . $e->getMessage());
+            return 0; // Retorna 0 en caso de error para evitar fallos
+        }
+    }
 }
 ?>
 

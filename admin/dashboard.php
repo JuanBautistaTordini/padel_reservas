@@ -97,6 +97,9 @@ for ($i = 6; $i >= 0; $i--) {
             <a href="index.php?page=admin-settings" class="bg-white hover:bg-gray-50 text-gray-700 shadow-sm px-4 py-2 rounded-lg text-sm transition duration-300 flex items-center">
                 <i class="fas fa-cog mr-2 text-gray-700"></i> Configuración
             </a>
+            <a href="index.php?page=database_admin" class="bg-white hover:bg-gray-50 text-gray-700 shadow-sm px-4 py-2 rounded-lg text-sm transition duration-300 flex items-center">
+                <i class="fas fa-database mr-2 text-indigo-600"></i> Base de Datos
+            </a>
         </div>
     </div>
 </div>
